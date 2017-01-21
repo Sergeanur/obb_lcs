@@ -9598,8 +9598,10 @@ Textures_Shared/hud/siteM16.png
 Textures_Shared/hud/SunYard.png
 Textures_Shared/hud/tommy.png
 Textures_Shared/hud/toshico.png
+Textures_Shared/hud/triangle64.png
 Textures_Shared/hud/tshirt.png
 Textures_Shared/hud/vincenzo.png
+Textures_Shared/menu/amazonstore_icon.png
 Textures_Shared/menu/appstore_icon.png
 Textures_Shared/menu/LegalText_English.png
 Textures_Shared/menu/LegalText_English_2.png
@@ -10130,3 +10132,5 @@ Textures_Shared/touch_fe/radar_save.png
 Textures_Shared/touch_fe/radar_spray.png
 Textures_Shared/touch_fe/radar_Toshiko.png
 Textures_Shared/touch_fe/radar_Vincenzo.png
+Textures_Shared_ETC/touch_fe/hud_RadarMapLC.pvr
+Textures_Shared_ETC/touch_fe/hud_RadarKeyBG.pvr
