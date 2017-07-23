@@ -217,7 +217,9 @@ size_t fwrite_enc2(void* a1, size_t a2, size_t a3, FILE* a4)
 	auto cur_pos = _ftelli64(a4);
 	BYTE* buf = new BYTE [a2 * a3];
 	decrypt((BYTE*)a1, a2 * a3, cur_pos);
-	return fwrite(a1, a2, a3, a4);
+	auto result = fwrite(a1, a2, a3, a4);
+	delete []buf;
+	return result;
 }
 
 size_t fwrite_enc(void* a1, size_t a2, size_t a3, FILE* a4)
@@ -236,20 +238,6 @@ size_t fwrite_enc(void* a1, size_t a2, size_t a3, FILE* a4)
 }
 
 #define _BLOCK_SIZE 0x2000
-
-DWORD BlockReadWrite(FILE* in, FILE* out, int _Size)
-{
-	BYTE fbuf[_BLOCK_SIZE];
-
-	while (_Size >= 0)
-	{
-		_Size -= _BLOCK_SIZE;
-		size_t BLOCK_SIZE = _BLOCK_SIZE;
-		if (_Size < 0) BLOCK_SIZE = _BLOCK_SIZE + _Size;
-		fread(fbuf, 1, BLOCK_SIZE, in);
-		fwrite_enc2(fbuf, 1, BLOCK_SIZE, out);
-	}
-}
 
 DWORD BlockReadWriteCRC32(FILE* in, FILE* out, int _Size)
 {
@@ -290,23 +278,25 @@ DWORD GetFilenameOffset(char* str)
 void main(int argc, char* argv[])
 {
 	if (argc < 2) return;
-	//printf("%s\n", argv[1]);
 	
-	sprintf(workdir, "%s\\", argv[1]);
-	printf("%s\n", workdir);
+	char *outname = strrchr( argv[1], '\\' );
+	if (outname)
+	{
+		*(outname++) = 0;
+		wchar_t path[MAX_PATH];
+		MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, argv[1], strlen(argv[1]), path, MAX_PATH);
+		SetCurrentDirectory( path );
+	}
+	else outname = argv[1];
+	sprintf(workdir, "%s\\", outname);
 
+	printf("Creating a list of files to process... ");
 	aFolders.push_back(Folder("", -1));
 	FindFoldersAndFiles("");
-
-	//for (int i = 0; i < aFolders.size(); i++)
-	//	printf("%s %i\n", aFolders[i].name.c_str(), aFolders[i].parent);
-
-	//for (int i = 0; i < aFiles.size(); i++)
-	//	printf("%s %i\n", aFiles[i].name.c_str(), aFiles[i].directory);
-	//system("pause");
+	printf("done!\n");
 
 	char obbname[MAX_PATH];
-	sprintf(obbname, "%s.obb", argv[1]);
+	sprintf(obbname, "%s.obb", outname);
 	FILE* f = fopen(obbname, "wb");
 
 	struct
